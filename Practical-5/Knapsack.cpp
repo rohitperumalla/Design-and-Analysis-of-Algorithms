@@ -20,7 +20,7 @@ int main()
         }
     }
 
-    cout << "Maximum value = " << dp[n][W] << endl; // will be 12
+    cout << "Maximum value = " << dp[n][W] << endl; 
 
     int w = W;
     int totalW = 0;
