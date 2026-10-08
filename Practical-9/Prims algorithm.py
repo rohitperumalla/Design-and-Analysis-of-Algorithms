@@ -1,55 +1,53 @@
-INF = float('inf')
+def prim(graph, start):
+    """
+    graph: dict where keys are nodes and values are lists of (neighbor, weight) tuples.
+    start: starting node for the MST.
+    """
+    # Track which nodes have been added to the MST
+    visited = {start}
+    
+    mst = []
+    total_weight = 0
+    num_vertices = len(graph)
+    
+    # Loop until all vertices are in the MST
+    while len(visited) < num_vertices:
+        min_weight = float('inf')
+        best_edge = None
+        
+        # Look at all visited nodes
+        for u in visited:
+            # Check all neighbors of the visited nodes
+            for v, weight in graph[u]:
+                # Find the smallest edge pointing to an unvisited node
+                if v not in visited and weight < min_weight:
+                    min_weight = weight
+                    best_edge = (u, v, weight)
+        
+        # If no edge is found, the graph is disconnected
+        if best_edge is None:
+            break
+            
+        u, v, weight = best_edge
+        visited.add(v)
+        mst.append((u, v, weight))
+        total_weight += weight
+        
+    return mst, total_weight
 
+# Example usage:
+example_graph = {
+    'A': [('B', 4), ('H', 8)],
+    'B': [('A', 4), ('H', 11), ('C', 8)],
+    'C': [('B', 8), ('I', 2), ('D', 7), ('F', 4)],
+    'D': [('C', 7), ('F', 14), ('E', 9)],
+    'E': [('D', 9), ('F', 10)],
+    'F': [('C', 4), ('D', 14), ('E', 10), ('G', 2)],
+    'G': [('F', 2), ('I', 6), ('H', 1)],
+    'H': [('A', 8), ('B', 11), ('G', 1), ('I', 7)],
+    'I': [('C', 2), ('G', 6), ('H', 7)]
+}
 
-def prim_mst(graph, n):
-    selected = [False] * n
-    selected[0] = True  # Start from vertex 0
-
-    edge = 0
-    cost = 0
-
-    print("\nEdges in Minimum Spanning Tree:")
-
-    while edge < n - 1:
-        minimum = INF
-        x = y = -1
-
-        for i in range(n):
-            if selected[i]:
-                for j in range(n):
-                    if not selected[j] and graph[i][j] < minimum:
-                        minimum = graph[i][j]
-                        x = i
-                        y = j
-
-        print(f"{x} --> {y}  Cost = {graph[x][y]}")
-        cost += graph[x][y]
-        selected[y] = True
-        edge += 1
-
-    print(f"\nMinimum Cost = {cost}")
-
-
-# ======================= Main =======================
-def main():
-    n = int(input("Enter number of vertices: "))
-
-    print("Enter Cost Adjacency Matrix:")
-
-    graph = []
-
-    for _ in range(n):
-        row = list(map(int, input().split()))
-
-        # Replace 0 (no edge) with INF except for diagonal
-        for j in range(n):
-            if row[j] == 0:
-                row[j] = INF
-
-        graph.append(row)
-
-    prim_mst(graph, n)
-
-
-if __name__ == "__main__":
-    main()
+mst_edges, cost = prim(example_graph, 'A')
+print("Edges in MST:", mst_edges)
+print("Total Cost:", cost)
